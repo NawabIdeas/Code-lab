@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+    color: #333;
+}
+
+.admin-panel {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.admin-panel h1, h2 {
+    text-align: center;
+}
+
+.admin-panel input, select, textarea {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.admin-panel button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+#order-list, #user-list, #payment-list, #admin-product-list {
+    margin: 20px 0;
+}
+
+.order-item, .user-item, .payment-item, .product-item {
+    background: #fff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
