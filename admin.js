@@ -1,13 +1,11 @@
 // Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAe-ssCLGnjPwBtBHoWMLZhtzhRg7euoko",
-  authDomain: "codelab-d73af.firebaseapp.com",
-  databaseURL: "https://codelab-d73af-default-rtdb.firebaseio.com",
-  projectId: "codelab-d73af",
-  storageBucket: "codelab-d73af.firebasestorage.app",
-  messagingSenderId: "77821476199",
-  appId: "1:77821476199:web:a56387c237e1f77509c3c2",
-  measurementId: "G-JMLB3Q0SH2"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -20,6 +18,7 @@ auth.onAuthStateChanged(user => {
     if (!user || user.email !== 'admin@appname.com') {
         window.location.href = 'index.html';
     } else {
+        loadCategories();
         loadOrders();
         loadUsers();
         loadPaymentMethods();
@@ -29,6 +28,47 @@ auth.onAuthStateChanged(user => {
 
 function logout() {
     auth.signOut().then(() => window.location.href = 'index.html');
+}
+
+function loadCategories() {
+    const categoryList = document.getElementById('category-list');
+    const productCategorySelect = document.getElementById('product-category');
+    categoryList.innerHTML = '';
+    productCategorySelect.innerHTML = '<option value="">Select Category</option>';
+    db.collection('categories').orderBy('name').get().then(snapshot => {
+        snapshot.forEach(doc => {
+            const category = doc.data();
+            const div = document.createElement('div');
+            div.className = 'category-item';
+            div.innerHTML = `
+                <p>${category.name}</p>
+                <button class="btn-3d" onclick="deleteCategory('${doc.id}')">Delete</button>
+            `;
+            categoryList.appendChild(div);
+            const option = document.createElement('option');
+            option.value = category.name;
+            option.textContent = category.name;
+            productCategorySelect.appendChild(option);
+        });
+    });
+}
+
+function addCategory() {
+    const categoryName = document.getElementById('category-name').value;
+    if (categoryName) {
+        db.collection('categories').add({
+            name: categoryName
+        }).then(() => {
+            document.getElementById('category-name').value = '';
+            loadCategories();
+        });
+    } else {
+        alert('Please enter a category name.');
+    }
+}
+
+function deleteCategory(categoryId) {
+    db.collection('categories').doc(categoryId).delete().then(() => loadCategories());
 }
 
 function loadOrders() {
@@ -42,14 +82,18 @@ function loadOrders() {
                 const div = document.createElement('div');
                 div.className = 'order-item';
                 div.innerHTML = `
-                    <p>Product: ${order.productTitle}</p>
-                    <p>User: ${user.name} (${user.email})</p>
-                    <p>WhatsApp: ${order.whatsapp}</p>
-                    <p>Payment Method: ${order.paymentMethod}</p>
-                    <p>Status: ${order.status}</p>
-                    <img src="${order.screenshot}" alt="Screenshot" style="max-width: 100px; cursor: pointer;" onclick="window.open('${order.screenshot}')">
-                    <button onclick="updateOrderStatus('${doc.id}', 'Approved')">Approve</button>
-                    <button onclick="updateOrderStatus('${doc.id}', 'Rejected')">Reject</button>
+                    <div>
+                        <p>Product: ${order.productTitle}</p>
+                        <p>User: ${user.name} (${user.email})</p>
+                        <p>WhatsApp: ${order.whatsapp}</p>
+                        <p>Payment Method: ${order.paymentMethod}</p>
+                        <p>Status: ${order.status}</p>
+                        <img src="${order.screenshot}" alt="Screenshot" style="max-width: 100px; cursor: pointer;" onclick="window.open('${order.screenshot}')">
+                    </div>
+                    <div>
+                        <button class="btn-3d" onclick="updateOrderStatus('${doc.id}', 'Approved')">Approve</button>
+                        <button class="btn-3d" onclick="updateOrderStatus('${doc.id}', 'Rejected')">Reject</button>
+                    </div>
                 `;
                 orderList.appendChild(div);
             });
@@ -71,9 +115,11 @@ function loadUsers() {
             const div = document.createElement('div');
             div.className = 'user-item';
             div.innerHTML = `
-                <p>Name: ${user.name}</p>
-                <p>Email: ${user.email}</p>
-                <button onclick="deleteUser('${doc.id}')">Remove</button>
+                <div>
+                    <p>Name: ${user.name}</p>
+                    <p>Email: ${user.email}</p>
+                </div>
+                <button class="btn-3d" onclick="deleteUser('${doc.id}')">Remove</button>
             `;
             userList.appendChild(div);
         });
@@ -93,9 +139,11 @@ function loadPaymentMethods() {
             const div = document.createElement('div');
             div.className = 'payment-item';
             div.innerHTML = `
-                <p>Name: ${payment.name}</p>
-                <p>Account: ${payment.accountName} - ${payment.accountNumber}</p>
-                <button onclick="deletePaymentMethod('${doc.id}')">Delete</button>
+                <div>
+                    <p>Name: ${payment.name}</p>
+                    <p>Account: ${payment.accountName} - ${payment.accountNumber}</p>
+                </div>
+                <button class="btn-3d" onclick="deletePaymentMethod('${doc.id}')">Delete</button>
             `;
             paymentList.appendChild(div);
         });
@@ -106,6 +154,10 @@ function addPaymentMethod() {
     const name = document.getElementById('payment-name').value;
     const accountName = document.getElementById('account-name').value;
     const accountNumber = document.getElementById('account-number').value;
+    if (!name || !accountName || !accountNumber) {
+        alert('Please fill all payment method fields.');
+        return;
+    }
     db.collection('paymentMethods').add({
         name: name,
         accountName: accountName,
@@ -132,12 +184,17 @@ function addProduct() {
     const buyButton = document.getElementById('buy-button').checked;
     const image = document.getElementById('product-image').files[0];
 
+    if (!title || !pricePKR || !category) {
+        alert('Please fill all required fields.');
+        return;
+    }
+
     if (!image) {
         db.collection('products').add({
             title: title,
             description: description,
             pricePKR: pricePKR,
-            priceCrypto: priceCrypto,
+            priceCrypto: priceCrypto || '',
             category: category,
             demoURL: demoURL,
             buyButton: buyButton,
@@ -156,7 +213,7 @@ function addProduct() {
                 title: title,
                 description: description,
                 pricePKR: pricePKR,
-                priceCrypto: priceCrypto,
+                priceCrypto: priceCrypto || '',
                 category: category,
                 image: url,
                 demoURL: demoURL,
@@ -189,11 +246,13 @@ function loadProducts() {
             const div = document.createElement('div');
             div.className = 'product-item';
             div.innerHTML = `
-                <p>Title: ${product.title}</p>
-                <p>Category: ${product.category}</p>
-                <p>Price: PKR ${product.pricePKR}, Crypto ${product.priceCrypto}</p>
-                ${product.image ? `<img src="${product.image}" alt="${product.title}" style="max-width: 100px;">` : ''}
-                <button onclick="deleteProduct('${doc.id}')">Delete</button>
+                <div>
+                    <p>Title: ${product.title}</p>
+                    <p>Category: ${product.category}</p>
+                    <p>Price: PKR ${product.pricePKR}${product.priceCrypto ? `, Crypto ${product.priceCrypto}` : ''}</p>
+                    ${product.image ? `<img src="${product.image}" alt="${product.title}" style="max-width: 100px;">` : ''}
+                </div>
+                <button class="btn-3d" onclick="deleteProduct('${doc.id}')">Delete</button>
             `;
             productList.appendChild(div);
         });
@@ -202,4 +261,4 @@ function loadProducts() {
 
 function deleteProduct(productId) {
     db.collection('products').doc(productId).delete().then(() => loadProducts());
-}
+                                                                    }
