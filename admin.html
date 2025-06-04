@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"></script>
+</head>
+<body>
+    <div class="admin-panel">
+        <h1>Admin Panel</h1>
+        <button class="btn-3d" onclick="logout()">Logout</button>
+        <h2>Manage Categories</h2>
+        <input type="text" id="category-name" placeholder="Category Name">
+        <button class="btn-3d" onclick="addCategory()">Add Category</button>
+        <div id="category-list"></div>
+        <h2>Orders</h2>
+        <div id="order-list"></div>
+        <h2>Users</h2>
+        <div id="user-list"></div>
+        <h2>Add Payment Method</h2>
+        <input type="text" id="payment-name" placeholder="Payment Method Name (e.g., JazzCash)">
+        <input type="text" id="account-name" placeholder="Account Name">
+        <input type="text" id="account-number" placeholder="Account Number / Crypto Address">
+        <button class="btn-3d" onclick="addPaymentMethod()">Add Payment</button>
+        <h2>Payment Methods</h2>
+        <div id="payment-list"></div>
+        <h2>Add Product</h2>
+        <input type="text" id="product-title" placeholder="Product Title" required>
+        <textarea id="product-description" placeholder="Product Description"></textarea>
+        <input type="file" id="product-image" accept="image/*">
+        <input type="number" id="product-price-pkr" placeholder="Price in PKR" required>
+        <input type="number" id="product-price-crypto" placeholder="Price in Crypto (Optional)">
+        <select id="product-category" required></select>
+        <input type="text" id="demo-url" placeholder="Demo URL (Optional)">
+        <label><input type="checkbox" id="buy-button" checked> Enable Buy Button</label>
+        <button class="btn-3d" onclick="addProduct()">Add Product</button>
+        <h2>Products</h2>
+        <div id="admin-product-list"></div>
+    </div>
+    <script src="admin.js"></script>
+</body>
+</html>

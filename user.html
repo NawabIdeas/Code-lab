@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Name - User Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"></script>
+</head>
+<body>
+    <div class="container" id="login-section">
+        <h1 class="app-title">App Name</h1>
+        <div class="form-box">
+            <h2 id="form-title">Login</h2>
+            <input type="text" id="register-name" placeholder="Full Name" style="display: none;">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button class="btn-3d" onclick="handleAuth()">Login</button>
+            <p id="auth-toggle">Not registered? <a href="#" onclick="toggleAuthForm()">Create an account</a></p>
+        </div>
+    </div>
+    <div class="dashboard" id="dashboard-section" style="display: none;">
+        <header>
+            <div class="menu-icon" onclick="toggleMenu()">☰</div>
+            <h1 class="app-title">App Name</h1>
+            <div class="profile" onclick="showSection('profile-section')">Profile</div>
+        </header>
+        <nav class="sidebar" id="sidebar">
+            <a href="#" onclick="showSection('dashboard-content')">Dashboard</a>
+            <a href="#" onclick="showSection('status-content')">Status</a>
+            <a href="#" onclick="showSection('contact-content')">Contact</a>
+            <a href="#" onclick="showSection('about-content')">About</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </nav>
+        <div class="content" id="dashboard-content" style="display: none;">
+            <div class="categories">
+                <h2>Categories</h2>
+                <div class="category-list" id="category-list"></div>
+            </div>
+            <div class="products" id="product-list"></div>
+        </div>
+        <div class="content" id="status-content" style="display: none;">
+            <h2>Order Status</h2>
+            <div id="status-list"></div>
+        </div>
+        <div class="content" id="contact-content" style="display: none;">
+            <h2>Contact Us</h2>
+            <p>For support, reach out to us at:</p>
+            <p>Email: <a href="mailto:support@appname.com">support@appname.com</a></p>
+        </div>
+        <div class="content" id="about-content" style="display: none;">
+            <h2>About Us</h2>
+            <p>Welcome to App Name! We provide a wide range of premium products to meet your needs with quality and convenience.</p>
+        </div>
+        <div class="content" id="profile-section" style="display: none;">
+            <h2>Profile</h2>
+            <p>Name: <span id="user-name"></span></p>
+            <p>Email: <span id="user-email"></span></p>
+        </div>
+        <div class="modal" id="buy-modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">×</span>
+                <h2>Purchase Product</h2>
+                <p>Product: <span id="product-name"></span></p>
+                <p>Name: <span id="user-name-buy"></span></p>
+                <input type="text" id="whatsapp-number" placeholder="Enter WhatsApp Number" required>
+                <select id="payment-method" onchange="showPaymentDetails()">
+                    <option value="">Select Payment Method</option>
+                </select>
+                <div id="payment-details"></div>
+                <input type="file" id="payment-screenshot" accept="image/*">
+                <button class="btn-3d" onclick="submitOrder()">Submit</button>
+            </div>
+        </div>
+        <div class="modal" id="demo-modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDemoModal()">×</span>
+                <iframe id="demo-iframe" src=""></iframe>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
